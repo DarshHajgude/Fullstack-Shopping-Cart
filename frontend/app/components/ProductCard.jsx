@@ -5,7 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function ProductCard({ product }) {
-  const { addToCart } = useCart();
+  const { cart, addToCart, updateQuantity, normalizeId } = useCart();
+  const cartItem = cart.find((item) => normalizeId(item) === normalizeId(product));
 
   return (
     <div className="border rounded-lg p-4 flex flex-col">
@@ -23,12 +24,30 @@ export default function ProductCard({ product }) {
       </Link>
       <div className="mt-auto">
         <p className="text-lg font-semibold mt-2">${product.price}</p>
-        <button
-          onClick={() => addToCart(product)}
-          className="mt-2 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-        >
-          Add to Cart
-        </button>
+        {cartItem ? (
+          <div className="flex items-center justify-center mt-2">
+            <button
+              onClick={() => updateQuantity(cartItem.id || cartItem._id, (cartItem.quantity || 1) - 1)}
+              className="bg-gray-200 px-3 py-1 rounded-l"
+            >
+              -
+            </button>
+            <span className="px-4 py-1 bg-gray-100">{cartItem.quantity}</span>
+            <button
+              onClick={() => updateQuantity(cartItem.id || cartItem._id, (cartItem.quantity || 1) + 1)}
+              className="bg-gray-200 px-3 py-1 rounded-r"
+            >
+              +
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => addToCart(product)}
+            className="mt-2 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          >
+            Add to Cart
+          </button>
+        )}
       </div>
     </div>
   );

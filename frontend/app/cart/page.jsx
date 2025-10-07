@@ -20,6 +20,9 @@ export default function CartPage() {
         <CartItem key={item.id || item._id} item={item} />
       ))}
 
+      <div className="text-right font-bold text-lg mb-4">
+        Total: ${cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}
+      </div>
       <div className="flex justify-between items-center border-t pt-4">
         <button
           onClick={clearCart}
