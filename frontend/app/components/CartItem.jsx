@@ -6,9 +6,18 @@ export default function CartItem({ item }) {
 
   return (
     <div className="flex items-center justify-between border-b py-2">
-      <div>
-        <h4 className="font-semibold">{item.name}</h4>
-        <p>${item.price}</p>
+      <div className="flex items-center space-x-4">
+        {item.image && (
+          <img
+            src={item.image}
+            alt={item.name}
+            className="w-16 h-16 object-cover rounded"
+          />
+        )}
+        <div>
+          <h4 className="font-semibold">{item.name}</h4>
+          <p>${item.price}</p>
+        </div>
       </div>
       <div className="flex items-center space-x-2">
         <button

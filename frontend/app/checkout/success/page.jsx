@@ -1,11 +1,11 @@
   "use client";
 
-  import { useEffect, useContext, useState } from "react";
+  import { useEffect, useContext, useState, Suspense } from "react";
   import { CartContext } from "../../context/CartContext";
   import { useSearchParams, useRouter } from "next/navigation";
   import axios from "axios";
 
-  export default function Success() {
+  function SuccessContent() {
     const { clearCart } = useContext(CartContext);
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -76,5 +76,13 @@
           Continue Shopping
         </button>
       </div>
+    );
+  }
+
+  export default function Success() {
+    return (
+      <Suspense fallback={<p className="p-6">Loading...</p>}>
+        <SuccessContent />
+      </Suspense>
     );
   }

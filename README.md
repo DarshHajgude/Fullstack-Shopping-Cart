@@ -2,6 +2,14 @@
 
 This is a full-stack e-commerce application with a Next.js frontend and a Node.js/Express backend. It includes features like product display, cart management, and Stripe checkout.
 
+## Project Demo
+
+[Full-Stack E-commerce Application Walkthrough](https://www.loom.com/share/81e4fdc98c724680b0e8136a4bb6176f?sid=24fc635f-ac22-40a4-a726-615c0ff6af22)
+
+This project was built as part of the ASE Challenge by Verto. It demonstrates a full-stack shopping cart application with a Next.js frontend and a Node.js/Express backend. The application is deployed on Vercel.
+
+[LinkedIn Post](https://www.linkedin.com/posts/darshhajgude_full-stack-e-commerce-application-walkthrough-activity-7382530795229319168-ZTXK?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD4RXT4Biaw8aHgO6CSevi7g3D5sK1E8npE)
+
 ## Local Setup and Running
 
 ### Backend

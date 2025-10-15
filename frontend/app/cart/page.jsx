@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../context/AuthContext";
 import CartItem from "../components/CartItem";
+import { createCheckoutSession } from "../lib/api";
 
 export default function CartPage() {
   const { cart, removeFromCart, clearCart } = useCart();
@@ -33,22 +34,34 @@ export default function CartPage() {
         <CheckoutButton
           loading={loading}
           setLoading={setLoading}
+          cart={cart}
         />
       </div>
     </div>
   );
 }
 
-function CheckoutButton({ loading, setLoading }) {
+function CheckoutButton({ loading, setLoading, cart }) {
   const router = useRouter();
   const { user } = useAuth();
   const isAuthed = !!user;
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (loading) return;
     if (!isAuthed) return; // Block interaction when unauthenticated
+    if (!cart || !cart.length) return alert("Your cart is empty.");
     setLoading(true);
-    router.push("/checkout");
+
+    try {
+      const { url } = await createCheckoutSession(cart, user?._id);
+      if (!url) throw new Error("No checkout URL returned from server");
+
+      window.location.href = url;
+    } catch (err) {
+      console.error("Checkout error:", err);
+      alert(err.error || err.message || "Failed to create checkout session");
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,11 +73,11 @@ function CheckoutButton({ loading, setLoading }) {
         className={`${!isAuthed ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"} text-white px-6 py-2 rounded disabled:opacity-60`}
         title={!isAuthed ? "Please login to proceed to checkout" : undefined}
       >
-        {loading ? "Processing..." : "Proceed to Checkout"}
+        {loading ? "Redirecting to payment..." : "Proceed to Checkout"}
       </button>
       {!isAuthed && (
         <button
-          onClick={() => router.push(`/login?redirect=/checkout`)}
+          onClick={() => router.push(`/login?redirect=/cart`)}
           className="px-4 py-2 rounded border border-blue-600 text-blue-600 hover:bg-blue-50"
         >
           Login to continue
