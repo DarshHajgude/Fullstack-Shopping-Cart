@@ -3,7 +3,7 @@
   import { useEffect, useContext, useState, Suspense } from "react";
   import { CartContext } from "../../context/CartContext";
   import { useSearchParams, useRouter } from "next/navigation";
-  import axios from "axios";
+  import { confirmOrder } from "../../lib/api";
 
   function SuccessContent() {
     const { clearCart } = useContext(CartContext);
@@ -22,26 +22,25 @@
         return;
       }
 
-      const confirmOrder = async () => {
-        try {
-          const res = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/checkout/confirm`,
-            { sessionId }
-          );
-
-          if (res.data?.order) {
-            setOrder(res.data.order);
-            clearCart(); // clear cart after successful order
-          } else {
-            setError(res.data?.error || "Failed to confirm order");
+        const confirm = async () => {
+          try {
+            const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+            const data = await confirmOrder(sessionId, token);
+            if (data?.order) {
+              setOrder(data.order);
+              clearCart();
+            } else {
+              setError(data?.error || 'Failed to confirm order');
+            }
+          } catch (err) {
+            console.error('Error confirming order:', err);
+            setError(err?.error || err?.message || 'Error confirming order');
+          } finally {
+            setLoading(false);
           }
-        } catch (err) {
-          console.error("Error confirming order:", err.response?.data || err.message);
-          setError(err.response?.data?.error || "Error confirming order");
-        } finally {
-          setLoading(false);
-        }
-      };
+        };
+
+        confirm();
 
       confirmOrder();
     }, [searchParams, clearCart]);

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useCart } from "../../context/CartContext";
+import { API_URL } from "../../lib/api";
 import React from "react";
 
 export default function ProductPage({ params }) {
@@ -20,7 +21,7 @@ export default function ProductPage({ params }) {
 
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+  const res = await axios.get(`${API_URL}/api/products/${id}`);
         if (mounted) setProduct(res.data);
       } catch (err) {
         console.error("Failed to fetch product", err);
@@ -65,6 +66,7 @@ export default function ProductPage({ params }) {
             {product.description || "No description available."}
           </p>
           <div className="mt-4 font-bold text-lg">${product.price?.toFixed(2)}</div>
+          <div className="mt-2 text-sm text-gray-600">Stock: {typeof product.stock === 'number' ? product.stock : '—'}</div>
 
           <div className="mt-4 flex items-center gap-3">
             {existing ? (
